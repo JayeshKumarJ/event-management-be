@@ -18,6 +18,7 @@ const {
   getPasses,
   getAllPasses,
   cancelPass,
+  getAllTrending,
 } = require("../controllers/eventUserController");
 
 const userRouter = express.Router();
@@ -29,7 +30,11 @@ userRouter.route("/deleteMe").delete(protect, deleteMe);
 userRouter.route("/buyPass").post(protect, buyPass);
 userRouter.route("/CancelPass").post(protect, cancelPass);
 
+// userRouter.route("/pass").get(protect, getMe, getAllPasses);
 userRouter.route("/pass").get(protect, getMe, getAllPasses);
+userRouter.route("/trending").get(getAllTrending);
+
+
 userRouter.route("/pass/:id").get(getPasses);
 
 userRouter.route("/signup").post(signup);

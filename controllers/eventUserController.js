@@ -1,3 +1,4 @@
+const EventUserRepository = require("../factory/eventUserRepository");
 const { getOne, getAll } = require("../factory/handleFactory");
 const buySellHelper = require("../helpers/buySellHelper");
 const BoughtPassesModel = require("../models/bought_Passes_model");
@@ -37,7 +38,7 @@ const buyPass = catchAsync(async (req, res, next) => {
       return res.status(200).json({
         status: "success",
         data: eventUser,
-        message:message.success.buy(quantityPurchased)
+        message: message.success.buy(quantityPurchased),
       });
     }
     return res.status(400).json({
@@ -91,14 +92,12 @@ const cancelPass = catchAsync(async (req, res, next) => {
       return res.status(200).json({
         status: "success",
         data: eventUser,
-        message:message.success.cancel(quantityCanceled)
-
+        message: message.success.cancel(quantityCanceled),
       });
     }
     return res.status(400).json({
       status: "fail",
       messsage: message.error.cancel(bought),
-
     });
   } catch (error) {
     res.status(400).json({
@@ -109,5 +108,27 @@ const cancelPass = catchAsync(async (req, res, next) => {
 });
 
 const getPasses = getOne(EventUserModel);
-const getAllPasses = getAll(EventUserModel);
-module.exports = { buyPass, getPasses, getAllPasses, cancelPass };
+// const getAllPasses = getAll(EventUserModel);
+const getAllPasses = catchAsync(async (req, res, next) => {
+  const getPasses = await EventUserRepository.getAll(req.query);
+  res.status(200).json({
+    status: "success",
+    data: getPasses,
+  });
+});
+
+const getAllTrending = catchAsync(async (req, res, next) => {
+  console.log("trending")
+  const trending = await EventUserRepository.getTrendingEvents(req.query);
+  res.status(200).json({
+    status: "success",
+    data: trending,
+  });
+});
+module.exports = {
+  buyPass,
+  getPasses,
+  getAllPasses,
+  cancelPass,
+  getAllTrending,
+};

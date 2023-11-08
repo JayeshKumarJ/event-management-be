@@ -117,9 +117,15 @@ class APIFeatures {
     console.log("this=>", this.queryString.search);
     if (this.queryString.search) {
       this.query = this.query.find({
-        $or: [
-          { name: { $regex: this.queryString.search.trim(), $options: "i" } },
-        ],
+          $or: [
+            {
+              purchaseType: {
+                $regex: this.queryString.search.trim(),
+                $options: "i",
+              },
+            },
+          ],
+        // },
       });
     }
     return this;

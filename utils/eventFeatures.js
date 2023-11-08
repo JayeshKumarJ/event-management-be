@@ -21,5 +21,7 @@ export class eventRepository {
         as: "category",
       },
     });
+
+    
   });
 }

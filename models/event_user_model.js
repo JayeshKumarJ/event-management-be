@@ -29,21 +29,21 @@ const EventUserSchema = new mongoose.Schema(
   }
 );
 
-EventUserSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "userId",
-    select: "name",
-  });
-  next();
-});
+// EventUserSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: "userId",
+//     select: "name",
+//   });
+//   next();
+// });
 
-EventUserSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "eventId",
-    select: "name description -_id",
-  });
-  next();
-});
+// EventUserSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: "eventId",
+//     select: "name description -_id",
+//   });
+//   next();
+// });
 
 // EventUserSchema.virtual("users", {
 //   ref: "users",
