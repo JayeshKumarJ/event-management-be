@@ -1,6 +1,7 @@
 const { cloneDeep } = require("lodash");
 const EventUserModel = require("../models/event_user_model");
 const EventModel = require("../models/eventModel");
+const moment = require("moment");
 
 class EventUserRepository {
   static getAll = async (query) => {
@@ -46,6 +47,7 @@ class EventUserRepository {
     });
 
     const search = query.search;
+    console.log(query.endDate, query.startDate);
     if (search) {
       facet.pipeline.push({
         $match: {
@@ -54,11 +56,51 @@ class EventUserRepository {
               "user_data.name": { $regex: search.trim(), $options: "i" },
             },
             { "event_data.name": { $regex: search.trim(), $options: "i" } },
+            {
+              "event_category_data.category": {
+                $regex: search.trim(),
+                $options: "i",
+              },
+            },
           ],
         },
       });
     }
 
+    if (query.startDate && query.endDate) {
+      facet.pipeline.push({
+        $match: {
+          $and: [
+            {
+              "event_data.startDate": {
+                $gte: moment(query.startDate).startOf("day").toDate(),
+              },
+            },
+            {
+              "event_data.endDate": {
+                $lte: moment(query.endDate).startOf("day").toDate(),
+              },
+            },
+          ],
+        },
+      });
+    } else if (query.startDate) {
+      facet.pipeline.push({
+        $match: {
+          "event_data.startDate": {
+            $gte: moment(query.startDate).startOf("day").toDate(),
+          },
+        },
+      });
+    } else if (query.endDate) {
+      facet.pipeline.push({
+        $match: {
+          "event_data.endDate": {
+            $lte: moment(query.endDate).startOf("day").toDate(),
+          },
+        },
+      });
+    }
     //sorting stage
     if (query.sortBy) {
       const sortOrder = query.sortAt === "desc" ? -1 : 1;
@@ -70,6 +112,15 @@ class EventUserRepository {
     }
 
     facet.metadata = cloneDeep(facet.pipeline);
+
+    // if (query.ldate) {
+    //   console.log(query.ldate)
+    //   facet.pipeline.push({
+    //     $sort: {
+    //       ["endDate"]: { $lte: query.ldate },
+    //     },
+    //   });
+    // }
 
     facet.metadata.push({
       $count: "totalCount",
@@ -112,14 +163,20 @@ class EventUserRepository {
       pipeline: [],
     };
     //sorting stage
-    if (query.sortBy === "trending") {
-      const sortOrder = query.sortAt === "asc" ? 1 : -1;
-      facet.pipeline.push({
-        $sort: {
-          ["soldOutPasses"]: sortOrder,
-        },
-      });
-    }
+    // if (query.sortBy === "trending") {
+    //   const sortOrder = query.sortAt === "asc" ? 1 : -1;
+    //   facet.pipeline.push({
+    //     $sort: {
+    //       ["soldOutPasses"]: sortOrder,
+    //     },
+    //   });
+    // }
+
+    facet.pipeline.push({
+      $sort: {
+        ["soldOutPasses"]: -1,
+      },
+    });
     facet.metadata = cloneDeep(facet.pipeline);
 
     facet.metadata.push({
@@ -127,7 +184,7 @@ class EventUserRepository {
     });
     const trendingEvent = await EventModel.aggregate([
       { $facet: facet },
-      //   { $unwind: "$metadata" },
+      { $unwind: "$metadata" },
       //   { $project: { data: "$pipeline" } },
 
       { $project: { metadata: `$metadata`, data: "$pipeline" } },

@@ -5,6 +5,8 @@ const message = {
 
     cancel: (quantity) =>
       `You have successfully cancel ${quantity} Passes `,
+
+      update:(data)=>`${data} updated successfuly`
   },
   error: {
     buy: (available) =>

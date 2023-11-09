@@ -95,47 +95,73 @@ const getAll = (Model) =>
     }
   });
 
-const getAllEvents = catchAsync(async (req, res) => {
-  try {
-    const doc = await EventModel.aggregate([
-      {
-        $group: {
-            _id: "$soldOutPasses",
-        //   _id: "",
-          sum: { $sum: "$soldOutPasses" },
-          avgSoldPasses: { $avg: "$soldOutPasses" },
-          minSoldPasses: { $min: "$soldOutPasses" },
-          maxSoldPasses: { $max: "$soldOutPasses" },
-        },
-      },
-      {
-        $lookup: {
-          from: "events",
-          localField: "category",
-          foreignField: "category",
-          as: "Category_details",
-        },
-      },
-    ]);
-    res.status(200).json({
-      status: "success",
-      results: doc.length,
-      data: {
-        data: doc,
-      },
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: error,
-    });
-  }
-});
+// const getAllEvents = async (query) => {
+//   let facet = {
+//     metadata: [],
+//     pipeline: [],
+//   };
+//   // facet.pipeline.push({
+//   //   $sort: {
+//   //     ["soldOutPasses"]: -1,
+//   //   },
+//   // });
+//   if (query.startDate && query.endDate) {
+//     facet.pipeline.push({
+//       $match: {
+//         $and: [
+//           {
+//             startDate: {
+//               $gte: moment(query.startDate).startOf("day").toDate(),
+//             },
+//           },
+//           {
+//             endDate: {
+//               $lte: moment(query.endDate).startOf("day").toDate(),
+//             },
+//           },
+//         ],
+//       },
+//     });
+//   } else if (query.startDate) {
+//     facet.pipeline.push({
+//       $match: {
+//         startDate: {
+//           $gte: moment(query.startDate).startOf("day").toDate(),
+//         },
+//       },
+//     });
+//   } else if (query.endDate) {
+//     facet.pipeline.push({
+//       $match: {
+//         endDate: {
+//           $lte: moment(query.endDate).startOf("day").toDate(),
+//         },
+//       },
+//     });
+//   }
+
+//   facet.metadata = cloneDeep(facet.pipeline);
+
+//   facet.metadata.push({
+//     $count: "totalCount",
+//   });
+//   const getAll = await EventModel.aggregate([
+//     { $facet: facet },
+//     { $unwind: "$metadata" },
+//     { $project: { metadata: `$metadata`, data: "$pipeline" } },
+//   ]);
+
+//   if (getAll.length > 0) {
+//     return getAll[0];
+//   } else {
+//     return [];
+//   }
+// };
 module.exports = {
   deleteOne,
   updateOne,
   createOne,
   getOne,
   getAll,
-//   getAllEvents,
+  // getAllEvents,
 };
