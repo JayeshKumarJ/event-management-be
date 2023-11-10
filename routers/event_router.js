@@ -9,8 +9,8 @@ const eventRouter = express.Router();
 eventRouter
   .route("/")
   .post(protect, restrictTo("admin"), EventController.createEvent)
-  .get(EventController.getAllEvent)
-  eventRouter
+  .get(EventController.getAllEvent);
+eventRouter
   .route("/:id")
   .get(EventController.getEvent)
   .patch(protect, restrictTo("admin"), EventController.updateEvent)

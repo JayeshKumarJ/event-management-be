@@ -3,7 +3,12 @@ var jwt = require("jsonwebtoken");
 const catchAsync = require("../../utils/catchAsync");
 const AppError = require("../../utils/appError");
 const UserModel = require("../../models/user_model");
-const { deleteOne, updateOne, getOne, getAll } = require("../../factory/handleFactory");
+const {
+  deleteOne,
+  updateOne,
+  getOne,
+  getAll,
+} = require("../../factory/handleFactory");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -29,10 +34,10 @@ const login = catchAsync(async (req, res, next) => {
   if (!email || !password) {
     return new AppError("Please provide email and password", 400);
   }
-
+  //get user password
   const user = await UserModel.findOne({ email }).select("+password");
   console.log(user);
-
+  // verify password
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 400));
   }
@@ -80,7 +85,7 @@ const protect = catchAsync(async (req, res, next) => {
 });
 
 const restrictTo = (...roles) => {
-//   console.log("roles", roles);
+  //   console.log("roles", roles);
   return (req, res, next) => {
     console.log("role is ", req);
     if (!roles.includes(req.user.role)) {
@@ -154,12 +159,11 @@ module.exports = {
   login,
   protect,
   restrictTo,
-//   deleteUser,
-//   updateUser,
-//   getUser,
-//   getAllUser,
-//   getMe,
-//   updateMe,
-//   deleteMe,
-
+  //   deleteUser,
+  //   updateUser,
+  //   getUser,
+  //   getAllUser,
+  //   getMe,
+  //   updateMe,
+  //   deleteMe,
 };

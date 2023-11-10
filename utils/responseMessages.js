@@ -1,12 +1,11 @@
 const message = {
   success: {
     buy: (quantity) =>
-   `Congratulations! You have successfully bought ${quantity} Passes `,
+      `Congratulations! You have successfully bought ${quantity} Passes `,
 
-    cancel: (quantity) =>
-      `You have successfully cancel ${quantity} Passes `,
+    cancel: (quantity) => `You have successfully cancel ${quantity} Passes `,
 
-      update:(data)=>`${data} updated successfuly`
+    update: (data) => `${data} updated successfuly`,
   },
   error: {
     buy: (available) =>

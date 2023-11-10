@@ -118,7 +118,6 @@ const getAllPasses = catchAsync(async (req, res, next) => {
 });
 
 const getAllTrending = catchAsync(async (req, res, next) => {
-  console.log("trending")
   const trending = await EventUserRepository.getTrendingEvents(req.query);
   res.status(200).json({
     status: "success",

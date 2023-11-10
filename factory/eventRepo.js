@@ -5,8 +5,7 @@ const moment = require("moment");
 class EventRepo {
   static create = async (body) => {
     try {
-      const event = await EventModel.create(body);
-      return event;
+      return await EventModel.create(body);
     } catch (error) {
       throw error;
     }
@@ -14,11 +13,10 @@ class EventRepo {
 
   static updateEvent = async (id, body) => {
     try {
-      const event = await EventModel.findByIdAndUpdate(id, body, {
+      return await EventModel.findByIdAndUpdate(id, body, {
         new: true,
         runValidators: true,
       });
-      return event;
     } catch (error) {
       throw error;
     }
@@ -26,21 +24,19 @@ class EventRepo {
 
   static deleteEvent = async (id) => {
     try {
-      const event = await EventModel.findByIdAndDelete(id);
-      return event;
+      return await EventModel.findByIdAndDelete(id);
     } catch (error) {
       throw error;
     }
   };
 
-  static getEventById  =async(id)=>{
+  static getEventById = async (id) => {
     try {
-        const event = await EventModel.findById(id);
-        return event;
+      return await EventModel.findById(id);
     } catch (error) {
-        throw error
+      throw error;
     }
-  }
+  };
   static getAllEvents = async (query) => {
     let facet = {
       metadata: [],
