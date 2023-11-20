@@ -1,5 +1,11 @@
-const { deleteOne, updateOne, getOne, getAll } = require("../factory/handleFactory");
+const {
+  deleteOne,
+  updateOne,
+  getOne,
+  getAll,
+} = require("../factory/handleFactory");
 const UserModel = require("../models/user_model");
+const EmailService = require("../services/emailNodemailer");
 const catchAsync = require("../utils/catchAsync");
 
 const getMe = (req, res, next) => {
@@ -59,6 +65,22 @@ const deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+const sendMail = catchAsync(async (req, res, nexr) => {
+  try {
+    await EmailService.sendEmail(req.body);
+    res.status(201).json({
+      status: "success",
+      message: "Email sent successfully",
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({
+      status: "fail",
+      error: error,
+    });
+  }
+});
+
 module.exports = {
   deleteUser,
   updateUser,
@@ -67,4 +89,5 @@ module.exports = {
   getMe,
   updateMe,
   deleteMe,
+  sendMail,
 };

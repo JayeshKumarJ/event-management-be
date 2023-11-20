@@ -1,4 +1,7 @@
 const express = require("express");
+const multer =require('multer')
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 const {
   getAllUser,
   getMe,
@@ -7,6 +10,7 @@ const {
   deleteMe,
   updateUser,
   deleteUser,
+  sendMail,
 } = require("../controllers/userController");
 const {
   protect,
@@ -20,6 +24,7 @@ const {
   cancelPass,
   getAllTrending,
 } = require("../controllers/eventUserController");
+const UploadController = require("../controllers/uploadController");
 
 const userRouter = express.Router();
 
@@ -40,4 +45,7 @@ userRouter.route("/pass/:id").get(getPasses);
 userRouter.route("/signup").post(signup);
 userRouter.route("/login").post(login);
 userRouter.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
+userRouter.route("/sendmail").post(sendMail)
+
+userRouter.route('/upload',upload.single('file')).post(UploadController.uploadFile)
 module.exports = userRouter;

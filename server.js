@@ -1,7 +1,10 @@
 const app = require("./app");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const cors = require("cors");
+
 const port = 4000;
+app.use(cors());
 
 process.on("uncaughtException", (err) => {
   console.log(err.name, err.message);
@@ -16,7 +19,6 @@ mongoose.connect(db, { autoIndex: false }).then((con) => {
   console.log("connection",con.connection.name)
   console.log("Database connected successfully");
 });
-
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
 });

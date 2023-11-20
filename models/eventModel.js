@@ -49,6 +49,7 @@ const EventSchema = new mongoose.Schema({
   ],
 });
 
+//pre Middleware
 EventSchema.pre(/^find/, function (next) {
   this.populate({
     path: "category",
